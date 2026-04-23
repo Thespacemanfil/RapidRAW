@@ -88,7 +88,7 @@ export default function GlobalTooltip({ appSettings }: GlobalTooltipProps) {
       if (!el.getAttribute('data-tooltip')) return;
 
       // Check if tooltips are enabled
-      if (appSettings?.enableTooltips === false) return;
+      if (appSettings?.enableTooltips !== true) return;
 
       targetRef.current = el;
 
