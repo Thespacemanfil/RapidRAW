@@ -146,7 +146,7 @@ export default function GlobalTooltip({ appSettings }: GlobalTooltipProps) {
       clearTimer();
       stopWatch();
     };
-  }, []);
+  }, [appSettings]);
 
   return createPortal(
     <AnimatePresence mode="wait">
