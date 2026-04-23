@@ -8,6 +8,7 @@ import { Adjustments, ColorGrading } from '../../utils/adjustments';
 import { AppSettings } from '../ui/AppProperties';
 import Text from '../ui/Text';
 import { TextColors, TextVariants, TextWeights } from '../../types/typography';
+import { TOOLTIP_TEXT } from '../../utils/tooltipText';
 
 interface ColorProps {
   color: string;
@@ -273,6 +274,7 @@ const ColorGradingPanel = ({ adjustments, setAdjustments, onDragStateChange }: C
           step={1}
           value={colorGrading.blending}
           onDragStateChange={onDragStateChange}
+          data-tooltip={TOOLTIP_TEXT.color.colorGrading.blending}
         />
         <Slider
           defaultValue={0}
@@ -283,6 +285,7 @@ const ColorGradingPanel = ({ adjustments, setAdjustments, onDragStateChange }: C
           step={1}
           value={colorGrading.balance}
           onDragStateChange={onDragStateChange}
+          data-tooltip={TOOLTIP_TEXT.color.colorGrading.balance}
         />
       </div>
     </div>
@@ -346,6 +349,7 @@ const ColorCalibrationPanel = ({ adjustments, setAdjustments, onDragStateChange 
           onChange={(e: any) => handleShadowsChange(e.target.value)}
           onDragStateChange={onDragStateChange}
           trackClassName="tint-gradient-track"
+          data-tooltip={TOOLTIP_TEXT.color.colorCalibration.tint}
         />
       </div>
       <div className="mt-3">
@@ -373,6 +377,7 @@ const ColorCalibrationPanel = ({ adjustments, setAdjustments, onDragStateChange 
           onChange={(e: any) => handlePrimaryChange('Hue', e.target.value)}
           onDragStateChange={onDragStateChange}
           trackClassName={`hue-slider-${trackSuffix}`}
+          data-tooltip={TOOLTIP_TEXT.color.colorCalibration.hue}
         />
         <Slider
           label="Saturation"
@@ -384,6 +389,7 @@ const ColorCalibrationPanel = ({ adjustments, setAdjustments, onDragStateChange 
           onChange={(e: any) => handlePrimaryChange('Saturation', e.target.value)}
           onDragStateChange={onDragStateChange}
           trackClassName={`sat-slider-${trackSuffix}`}
+          data-tooltip={TOOLTIP_TEXT.color.colorCalibration.saturation}
         />
       </div>
     </div>
@@ -472,6 +478,7 @@ export default function ColorPanel({
           value={adjustments.temperature || 0}
           trackClassName="temperature-gradient-track"
           onDragStateChange={onDragStateChange}
+          data-tooltip={TOOLTIP_TEXT.color.whiteBalance.temperature}
         />
         <Slider
           label="Tint"
@@ -482,6 +489,7 @@ export default function ColorPanel({
           value={adjustments.tint || 0}
           trackClassName="tint-gradient-track"
           onDragStateChange={onDragStateChange}
+          data-tooltip={TOOLTIP_TEXT.color.whiteBalance.tint}
         />
       </div>
 
@@ -497,6 +505,7 @@ export default function ColorPanel({
           step={1}
           value={adjustments.vibrance || 0}
           onDragStateChange={onDragStateChange}
+          data-tooltip={TOOLTIP_TEXT.color.presence.vibrance}
         />
         <Slider
           label="Saturation"
@@ -506,6 +515,7 @@ export default function ColorPanel({
           step={1}
           value={adjustments.saturation || 0}
           onDragStateChange={onDragStateChange}
+          data-tooltip={TOOLTIP_TEXT.color.presence.saturation}
         />
       </div>
 
@@ -545,6 +555,7 @@ export default function ColorPanel({
           value={currentHsl.hue}
           trackClassName={hue_slider}
           onDragStateChange={onDragStateChange}
+          data-tooltip={TOOLTIP_TEXT.color.colorMixer.hue}
         />
         <Slider
           label="Saturation"
@@ -555,6 +566,7 @@ export default function ColorPanel({
           value={currentHsl.saturation}
           trackClassName={saturation_slider}
           onDragStateChange={onDragStateChange}
+          data-tooltip={TOOLTIP_TEXT.color.colorMixer.saturation}
         />
         <Slider
           label="Luminance"

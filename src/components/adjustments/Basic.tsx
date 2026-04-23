@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import Slider from '../ui/Slider';
 import { Adjustments, BasicAdjustment } from '../../utils/adjustments';
 import { useEffect, useRef, useState } from 'react';
+import { TOOLTIP_TEXT } from '../../utils/tooltipText';
 
 interface BasicAdjustmentsProps {
   adjustments: Adjustments;
@@ -133,6 +134,7 @@ const ToneMapperSwitch = ({
             value={exposureValue}
             trackClassName="bg-surface"
             onDragStateChange={onDragStateChange}
+            data-tooltip={TOOLTIP_TEXT.basic.toneMapperExposure}
           />
         </div>
       </div>
@@ -168,6 +170,7 @@ export default function BasicAdjustments({
         step={0.01}
         value={adjustments.brightness}
         onDragStateChange={onDragStateChange}
+        data-tooltip={TOOLTIP_TEXT.basic.brightness}
       />
       <Slider
         label="Contrast"
@@ -177,6 +180,7 @@ export default function BasicAdjustments({
         step={1}
         value={adjustments.contrast}
         onDragStateChange={onDragStateChange}
+        data-tooltip={TOOLTIP_TEXT.basic.contrast}
       />
       <Slider
         label="Highlights"
@@ -186,6 +190,7 @@ export default function BasicAdjustments({
         step={1}
         value={adjustments.highlights}
         onDragStateChange={onDragStateChange}
+        data-tooltip={TOOLTIP_TEXT.basic.highlights}
       />
       <Slider
         label="Shadows"
@@ -195,6 +200,7 @@ export default function BasicAdjustments({
         step={1}
         value={adjustments.shadows}
         onDragStateChange={onDragStateChange}
+        data-tooltip={TOOLTIP_TEXT.basic.shadows}
       />
       <Slider
         label="Whites"
@@ -204,6 +210,7 @@ export default function BasicAdjustments({
         step={1}
         value={adjustments.whites}
         onDragStateChange={onDragStateChange}
+        data-tooltip={TOOLTIP_TEXT.basic.whites}
       />
       <Slider
         label="Blacks"
@@ -213,6 +220,7 @@ export default function BasicAdjustments({
         step={1}
         value={adjustments.blacks}
         onDragStateChange={onDragStateChange}
+        data-tooltip={TOOLTIP_TEXT.basic.blacks}
       />
 
       {isForMask ? (

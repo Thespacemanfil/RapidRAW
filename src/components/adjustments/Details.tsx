@@ -3,6 +3,7 @@ import { Adjustments, DetailsAdjustment } from '../../utils/adjustments';
 import { AppSettings } from '../ui/AppProperties';
 import Text from '../ui/Text';
 import { TextVariants } from '../../types/typography';
+import { TOOLTIP_TEXT } from '../../utils/tooltipText';
 
 interface DetailsPanelProps {
   adjustments: Adjustments;
@@ -41,6 +42,7 @@ export default function DetailsPanel({
             step={1}
             value={adjustments.sharpness}
             onDragStateChange={onDragStateChange}
+            data-tooltip={TOOLTIP_TEXT.details.sharpening.sharpness}
           />
         </div>
       )}
@@ -58,6 +60,7 @@ export default function DetailsPanel({
             step={1}
             value={adjustments.clarity}
             onDragStateChange={onDragStateChange}
+            data-tooltip={TOOLTIP_TEXT.details.presence.clarity}
           />
           <Slider
             label="Dehaze"
@@ -67,6 +70,7 @@ export default function DetailsPanel({
             step={1}
             value={adjustments.dehaze}
             onDragStateChange={onDragStateChange}
+            data-tooltip={TOOLTIP_TEXT.details.presence.dehaze}
           />
           <Slider
             label="Structure"
@@ -76,6 +80,7 @@ export default function DetailsPanel({
             step={1}
             value={adjustments.structure}
             onDragStateChange={onDragStateChange}
+            data-tooltip={TOOLTIP_TEXT.details.presence.structure}
           />
           {!isForMask && (
             <Slider
@@ -86,6 +91,7 @@ export default function DetailsPanel({
               step={1}
               value={adjustments.centré}
               onDragStateChange={onDragStateChange}
+              data-tooltip={TOOLTIP_TEXT.details.presence.centré}
             />
           )}
         </div>
@@ -128,6 +134,7 @@ export default function DetailsPanel({
             step={1}
             value={adjustments.chromaticAberrationRedCyan}
             onDragStateChange={onDragStateChange}
+            data-tooltip={TOOLTIP_TEXT.details.chromaticAberration.redCyan}
           />
           <Slider
             label="Blue/Yellow"
@@ -139,6 +146,7 @@ export default function DetailsPanel({
             step={1}
             value={adjustments.chromaticAberrationBlueYellow}
             onDragStateChange={onDragStateChange}
+            data-tooltip={TOOLTIP_TEXT.details.chromaticAberration.blueYellow}
           />
         </div>
       )}

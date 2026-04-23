@@ -5676,6 +5676,7 @@ function App() {
           )
         }
       />
+      <GlobalTooltip appSettings={appSettings} />
     </div>
   );
 }
@@ -5684,7 +5685,6 @@ const AppWrapper = () => (
   <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
     <ContextMenuProvider>
       <App />
-      <GlobalTooltip />
     </ContextMenuProvider>
   </ClerkProvider>
 );
