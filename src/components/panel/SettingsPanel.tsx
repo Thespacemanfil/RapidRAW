@@ -1877,7 +1877,7 @@ export default function SettingsPanel({
                     Numpad
                   </Text>
                   <Text className="mb-6">
-                    Enable numpad shortcuts for rapid color and density adjustments, inspired by traditional film scanner workflows.
+                    Enable numpad shortcuts for rapid color and density adjustments, inspired by the Fuji Frontier SP-3000 scanner workflow.
                   </Text>
 
                   <div className="space-y-6">
@@ -1937,6 +1937,14 @@ export default function SettingsPanel({
                             ))}
                           </div>
                         </SettingItem>
+
+                        {numpadSettings.mode === 'film' && (
+                          <div className="mt-2 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-md">
+                            <Text variant={TextVariants.body} className="text-yellow-500">
+                              ⚠️ Film mode is experimental. RGB/CMY color offsets are not yet applied to image rendering. Use Digital mode for full functionality.
+                            </Text>
+                          </div>
+                        )}
 
                         <SettingItem
                           label="Enter Key Behavior"
@@ -2060,7 +2068,7 @@ export default function SettingsPanel({
                             <KeybindItem keys={['8', '5']} description="Magenta / Green balance" />
                             <KeybindItem
                               keys={['9', '6']}
-                              description="Cyan / Red balance (Film mode only)"
+                              description="Cyan / Red balance (Film mode only - Experimental)"
                             />
                             <KeybindItem keys={['1', '.']} description="Density (Exposure ± Blacks)" />
                             <KeybindItem keys={['2', '3']} description="Contrast (Soften / Harden)" />

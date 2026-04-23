@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { ImageFile, Panel, SelectedImage, NumpadSettings } from '../components/ui/AppProperties';
 import { BrushSettings } from '../components/ui/AppProperties';
-import { Adjustments, INITIAL_SP3000_OFFSETS } from '../utils/adjustments';
+import { Adjustments, INITIAL_FILM_OFFSETS } from '../utils/adjustments';
 
 interface KeyboardShortcutsProps {
   activeAiPatchContainerId?: string | null;
@@ -253,7 +253,7 @@ export const useKeyboardShortcuts = ({
           }
         }
       } else {
-        if ((key === 'enter' || key === ' ') && !isCtrl) {
+        if ((key === 'enter' || key === ' ') && !isCtrl && code !== 'NumpadEnter') {
           event.preventDefault();
           if (libraryActivePath) {
             handleImageSelect(libraryActivePath);
@@ -325,7 +325,7 @@ export const useKeyboardShortcuts = ({
         }
       }
 
-      if (code.startsWith('Digit') && !isCtrl) {
+      if (code.startsWith('Digit') && !isCtrl && !code.startsWith('Numpad')) {
         event.preventDefault();
         const keyNum = parseInt(code.replace('Digit', ''), 10);
 
@@ -341,7 +341,7 @@ export const useKeyboardShortcuts = ({
             handleRate(keyNum);
           }
         }
-      } else if (['0', '1', '2', '3', '4', '5'].includes(key) && !isCtrl) {
+      } else if (['0', '1', '2', '3', '4', '5'].includes(key) && !isCtrl && !code.startsWith('Numpad')) {
         event.preventDefault();
         handleRate(parseInt(key, 10));
       }
@@ -375,7 +375,7 @@ export const useKeyboardShortcuts = ({
         }
       }
 
-      // Numpad shortcuts for SP-3000 style adjustments
+      // Numpad shortcuts for film-style adjustments
       if (numpadSettings?.enabled && selectedImage) {
         const stepSizes = numpadSettings.stepSizes;
         const mode = numpadSettings.mode;
@@ -395,9 +395,9 @@ export const useKeyboardShortcuts = ({
               } else {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  sp3000ColorOffsets: {
-                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
-                    yellowBlue: (prev.sp3000ColorOffsets?.yellowBlue || 0) - stepSizes.rgbCmy,
+                  filmColorOffsets: {
+                    ...(prev.filmColorOffsets || INITIAL_FILM_OFFSETS),
+                    yellowBlue: (prev.filmColorOffsets?.yellowBlue || 0) - stepSizes.rgbCmy,
                   },
                 }));
               }
@@ -412,9 +412,9 @@ export const useKeyboardShortcuts = ({
               } else {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  sp3000ColorOffsets: {
-                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
-                    yellowBlue: (prev.sp3000ColorOffsets?.yellowBlue || 0) + stepSizes.rgbCmy,
+                  filmColorOffsets: {
+                    ...(prev.filmColorOffsets || INITIAL_FILM_OFFSETS),
+                    yellowBlue: (prev.filmColorOffsets?.yellowBlue || 0) + stepSizes.rgbCmy,
                   },
                 }));
               }
@@ -429,9 +429,9 @@ export const useKeyboardShortcuts = ({
               } else {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  sp3000ColorOffsets: {
-                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
-                    magentaGreen: (prev.sp3000ColorOffsets?.magentaGreen || 0) - stepSizes.rgbCmy,
+                  filmColorOffsets: {
+                    ...(prev.filmColorOffsets || INITIAL_FILM_OFFSETS),
+                    magentaGreen: (prev.filmColorOffsets?.magentaGreen || 0) - stepSizes.rgbCmy,
                   },
                 }));
               }
@@ -446,9 +446,9 @@ export const useKeyboardShortcuts = ({
               } else {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  sp3000ColorOffsets: {
-                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
-                    magentaGreen: (prev.sp3000ColorOffsets?.magentaGreen || 0) + stepSizes.rgbCmy,
+                  filmColorOffsets: {
+                    ...(prev.filmColorOffsets || INITIAL_FILM_OFFSETS),
+                    magentaGreen: (prev.filmColorOffsets?.magentaGreen || 0) + stepSizes.rgbCmy,
                   },
                 }));
               }
@@ -458,9 +458,9 @@ export const useKeyboardShortcuts = ({
               if (mode === 'film') {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  sp3000ColorOffsets: {
-                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
-                    cyanRed: (prev.sp3000ColorOffsets?.cyanRed || 0) - stepSizes.rgbCmy,
+                  filmColorOffsets: {
+                    ...(prev.filmColorOffsets || INITIAL_FILM_OFFSETS),
+                    cyanRed: (prev.filmColorOffsets?.cyanRed || 0) - stepSizes.rgbCmy,
                   },
                 }));
               }
@@ -470,9 +470,9 @@ export const useKeyboardShortcuts = ({
               if (mode === 'film') {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  sp3000ColorOffsets: {
-                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
-                    cyanRed: (prev.sp3000ColorOffsets?.cyanRed || 0) + stepSizes.rgbCmy,
+                  filmColorOffsets: {
+                    ...(prev.filmColorOffsets || INITIAL_FILM_OFFSETS),
+                    cyanRed: (prev.filmColorOffsets?.cyanRed || 0) + stepSizes.rgbCmy,
                   },
                 }));
               }
@@ -482,12 +482,12 @@ export const useKeyboardShortcuts = ({
               if (mode === 'digital') {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  exposure: (prev.exposure || 0) + stepSizes.exposure,
+                  exposure: Math.max(-5, Math.min(5, (prev.exposure || 0) + stepSizes.exposure)),
                 }));
               } else {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  exposure: (prev.exposure || 0) + stepSizes.exposure,
+                  exposure: Math.max(-5, Math.min(5, (prev.exposure || 0) + stepSizes.exposure)),
                   blacks: (prev.blacks || 0) + 2,
                 }));
               }
@@ -497,12 +497,12 @@ export const useKeyboardShortcuts = ({
               if (mode === 'digital') {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  exposure: (prev.exposure || 0) - stepSizes.exposure,
+                  exposure: Math.max(-5, Math.min(5, (prev.exposure || 0) - stepSizes.exposure)),
                 }));
               } else {
                 setAdjustments((prev: Adjustments) => ({
                   ...prev,
-                  exposure: (prev.exposure || 0) - stepSizes.exposure,
+                  exposure: Math.max(-5, Math.min(5, (prev.exposure || 0) - stepSizes.exposure)),
                   blacks: (prev.blacks || 0) - 2,
                 }));
               }
@@ -511,22 +511,30 @@ export const useKeyboardShortcuts = ({
               // - Contrast (soften)
               setAdjustments((prev: Adjustments) => ({
                 ...prev,
-                contrast: (prev.contrast || 0) - stepSizes.contrast,
+                contrast: Math.max(-100, Math.min(100, (prev.contrast || 0) - stepSizes.contrast)),
               }));
               break;
             case 'Numpad3':
               // + Contrast (harden)
               setAdjustments((prev: Adjustments) => ({
                 ...prev,
-                contrast: (prev.contrast || 0) + stepSizes.contrast,
+                contrast: Math.max(-100, Math.min(100, (prev.contrast || 0) + stepSizes.contrast)),
               }));
               break;
             case 'Numpad0':
-              // Reset SP-3000 offsets
-              setAdjustments((prev: Adjustments) => ({
-                ...prev,
-                sp3000ColorOffsets: { ...INITIAL_SP3000_OFFSETS },
-              }));
+              // Reset color adjustments
+              if (mode === 'digital') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  temperature: 0,
+                  tint: 0,
+                }));
+              } else {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  filmColorOffsets: { ...INITIAL_FILM_OFFSETS },
+                }));
+              }
               break;
             case 'NumpadEnter':
               // Handle based on enterKeyMode
@@ -551,11 +559,11 @@ export const useKeyboardShortcuts = ({
                   // Export and move to next
                   if (handleExportCurrent) {
                     handleExportCurrent();
-                    const exportIndex = sortedImageList.findIndex(
+                    const currentIndex = sortedImageList.findIndex(
                       (img: ImageFile) => img.path === selectedImage.path
                     );
-                    if (exportIndex !== -1) {
-                      let newIndex = exportIndex + 1;
+                    if (currentIndex !== -1) {
+                      let newIndex = currentIndex + 1;
                       if (newIndex >= sortedImageList.length) {
                         newIndex = 0;
                       }
