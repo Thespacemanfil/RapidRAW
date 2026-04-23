@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { ImageFile, Panel, SelectedImage } from '../components/ui/AppProperties';
+import { ImageFile, Panel, SelectedImage, NumpadSettings } from '../components/ui/AppProperties';
 import { BrushSettings } from '../components/ui/AppProperties';
+import { Adjustments, INITIAL_SP3000_OFFSETS } from '../utils/adjustments';
 
 interface KeyboardShortcutsProps {
   activeAiPatchContainerId?: string | null;
@@ -51,8 +52,13 @@ interface KeyboardShortcutsProps {
   displaySize?: { width: number; height: number };
   baseRenderSize?: { width: number; height: number };
   originalSize?: { width: number; height: number };
-  brushSettings: BrushSettings | null;  
-  setBrushSettings: (settings: BrushSettings) => void;  
+  brushSettings: BrushSettings | null;
+  setBrushSettings: (settings: BrushSettings) => void;
+  numpadSettings?: NumpadSettings;
+  setNumpadSettings?: (settings: NumpadSettings) => void;
+  handleExportCurrent?: () => void;
+  adjustments: Adjustments;
+  setAdjustments: (adjustments: Partial<Adjustments> | ((prev: Adjustments) => Adjustments)) => void;
 }
 
 export const useKeyboardShortcuts = ({
@@ -104,8 +110,13 @@ export const useKeyboardShortcuts = ({
   displaySize,
   baseRenderSize,
   originalSize,
-  brushSettings,  
-  setBrushSettings,  
+  brushSettings,
+  setBrushSettings,
+  numpadSettings,
+  setNumpadSettings,
+  handleExportCurrent,
+  adjustments,
+  setAdjustments,
 }: KeyboardShortcutsProps) => {
   useEffect(() => {
     const handleKeyDown = (event: any) => {
@@ -364,6 +375,221 @@ export const useKeyboardShortcuts = ({
         }
       }
 
+      // Numpad shortcuts for SP-3000 style adjustments
+      if (numpadSettings?.enabled && selectedImage) {
+        const stepSizes = numpadSettings.stepSizes;
+        const mode = numpadSettings.mode;
+
+        // Handle numpad keys
+        if (code.startsWith('Numpad') && !isCtrl) {
+          event.preventDefault();
+
+          switch (code) {
+            case 'Numpad7':
+              // - Yellow / + Blue
+              if (mode === 'digital') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  temperature: (prev.temperature || 0) - stepSizes.rgbCmy,
+                }));
+              } else {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  sp3000ColorOffsets: {
+                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
+                    yellowBlue: (prev.sp3000ColorOffsets?.yellowBlue || 0) - stepSizes.rgbCmy,
+                  },
+                }));
+              }
+              break;
+            case 'Numpad4':
+              // + Yellow / - Blue
+              if (mode === 'digital') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  temperature: (prev.temperature || 0) + stepSizes.rgbCmy,
+                }));
+              } else {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  sp3000ColorOffsets: {
+                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
+                    yellowBlue: (prev.sp3000ColorOffsets?.yellowBlue || 0) + stepSizes.rgbCmy,
+                  },
+                }));
+              }
+              break;
+            case 'Numpad8':
+              // - Magenta / + Green
+              if (mode === 'digital') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  tint: (prev.tint || 0) - stepSizes.rgbCmy,
+                }));
+              } else {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  sp3000ColorOffsets: {
+                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
+                    magentaGreen: (prev.sp3000ColorOffsets?.magentaGreen || 0) - stepSizes.rgbCmy,
+                  },
+                }));
+              }
+              break;
+            case 'Numpad5':
+              // + Magenta / - Green
+              if (mode === 'digital') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  tint: (prev.tint || 0) + stepSizes.rgbCmy,
+                }));
+              } else {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  sp3000ColorOffsets: {
+                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
+                    magentaGreen: (prev.sp3000ColorOffsets?.magentaGreen || 0) + stepSizes.rgbCmy,
+                  },
+                }));
+              }
+              break;
+            case 'Numpad9':
+              // - Cyan / + Red (Film mode only)
+              if (mode === 'film') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  sp3000ColorOffsets: {
+                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
+                    cyanRed: (prev.sp3000ColorOffsets?.cyanRed || 0) - stepSizes.rgbCmy,
+                  },
+                }));
+              }
+              break;
+            case 'Numpad6':
+              // + Cyan / - Red (Film mode only)
+              if (mode === 'film') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  sp3000ColorOffsets: {
+                    ...(prev.sp3000ColorOffsets || INITIAL_SP3000_OFFSETS),
+                    cyanRed: (prev.sp3000ColorOffsets?.cyanRed || 0) + stepSizes.rgbCmy,
+                  },
+                }));
+              }
+              break;
+            case 'Numpad1':
+              // - Density (brighten)
+              if (mode === 'digital') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  exposure: (prev.exposure || 0) + stepSizes.exposure,
+                }));
+              } else {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  exposure: (prev.exposure || 0) + stepSizes.exposure,
+                  blacks: (prev.blacks || 0) + 2,
+                }));
+              }
+              break;
+            case 'NumpadDecimal':
+              // + Density (darken)
+              if (mode === 'digital') {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  exposure: (prev.exposure || 0) - stepSizes.exposure,
+                }));
+              } else {
+                setAdjustments((prev: Adjustments) => ({
+                  ...prev,
+                  exposure: (prev.exposure || 0) - stepSizes.exposure,
+                  blacks: (prev.blacks || 0) - 2,
+                }));
+              }
+              break;
+            case 'Numpad2':
+              // - Contrast (soften)
+              setAdjustments((prev: Adjustments) => ({
+                ...prev,
+                contrast: (prev.contrast || 0) - stepSizes.contrast,
+              }));
+              break;
+            case 'Numpad3':
+              // + Contrast (harden)
+              setAdjustments((prev: Adjustments) => ({
+                ...prev,
+                contrast: (prev.contrast || 0) + stepSizes.contrast,
+              }));
+              break;
+            case 'Numpad0':
+              // Reset SP-3000 offsets
+              setAdjustments((prev: Adjustments) => ({
+                ...prev,
+                sp3000ColorOffsets: { ...INITIAL_SP3000_OFFSETS },
+              }));
+              break;
+            case 'NumpadEnter':
+              // Handle based on enterKeyMode
+              switch (numpadSettings.enterKeyMode) {
+                case 'next':
+                  // Move to next image
+                  const nextIndex = sortedImageList.findIndex(
+                    (img: ImageFile) => img.path === selectedImage.path
+                  );
+                  if (nextIndex !== -1) {
+                    let newIndex = nextIndex + 1;
+                    if (newIndex >= sortedImageList.length) {
+                      newIndex = 0;
+                    }
+                    const nextImage = sortedImageList[newIndex];
+                    if (nextImage) {
+                      handleImageSelect(nextImage.path);
+                    }
+                  }
+                  break;
+                case 'instant-export':
+                  // Export and move to next
+                  if (handleExportCurrent) {
+                    handleExportCurrent();
+                    const exportIndex = sortedImageList.findIndex(
+                      (img: ImageFile) => img.path === selectedImage.path
+                    );
+                    if (exportIndex !== -1) {
+                      let newIndex = exportIndex + 1;
+                      if (newIndex >= sortedImageList.length) {
+                        newIndex = 0;
+                      }
+                      const nextImage = sortedImageList[newIndex];
+                      if (nextImage) {
+                        handleImageSelect(nextImage.path);
+                      }
+                    }
+                  }
+                  break;
+                case 'skip-move':
+                  // Just move to next (revert metadata changes)
+                  const skipIndex = sortedImageList.findIndex(
+                    (img: ImageFile) => img.path === selectedImage.path
+                  );
+                  if (skipIndex !== -1) {
+                    let newIndex = skipIndex + 1;
+                    if (newIndex >= sortedImageList.length) {
+                      newIndex = 0;
+                    }
+                    const nextImage = sortedImageList[newIndex];
+                    if (nextImage) {
+                      handleImageSelect(nextImage.path);
+                    }
+                  }
+                  break;
+              }
+              break;
+            default:
+              break;
+          }
+        }
+      }
+
       if (isCtrl) {
         const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
         const currentPercent =
@@ -502,7 +728,12 @@ export const useKeyboardShortcuts = ({
     displaySize,
     baseRenderSize,
     originalSize,
-    brushSettings,  
-    setBrushSettings,  
+    brushSettings,
+    setBrushSettings,
+    numpadSettings,
+    setNumpadSettings,
+    handleExportCurrent,
+    adjustments,
+    setAdjustments,
   ]);
 };

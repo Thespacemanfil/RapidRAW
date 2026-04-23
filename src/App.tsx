@@ -3165,6 +3165,13 @@ function App() {
     denoiseModalState.isOpen ||
     negativeModalState.isOpen;
 
+  const handleNumpadExport = useCallback(() => {
+    if (selectedImage) {
+      setMultiSelectedPaths([selectedImage.path]);
+      setIsLibraryExportPanelVisible(true);
+    }
+  }, [selectedImage]);
+
   useKeyboardShortcuts({
     isModalOpen: isAnyModalOpen,
     osPlatform,
@@ -3215,6 +3222,11 @@ function App() {
     originalSize,
     brushSettings: brushSettings,
     setBrushSettings: setBrushSettings,
+    numpadSettings: appSettings?.numpadSettings,
+    setNumpadSettings: (settings) => handleSettingsChange({ ...appSettings, numpadSettings: settings }),
+    handleExportCurrent: handleNumpadExport,
+    adjustments,
+    setAdjustments,
   });
 
   useEffect(() => {

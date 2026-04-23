@@ -124,6 +124,12 @@ export interface ColorCalibration {
   blueSaturation: number;
 }
 
+export interface Sp3000ColorOffsets {
+  cyanRed: number;
+  magentaGreen: number;
+  yellowBlue: number;
+}
+
 export interface Adjustments {
   [index: string]: any;
   aiPatches: Array<AiPatch>;
@@ -185,6 +191,7 @@ export interface Adjustments {
   shadows: number;
   sharpness: number;
   showClipping: boolean;
+  sp3000ColorOffsets?: Sp3000ColorOffsets;
   structure: number;
   temperature: number;
   tint: number;
@@ -346,6 +353,12 @@ const INITIAL_COLOR_CALIBRATION: ColorCalibration = {
   blueSaturation: 0,
 };
 
+export const INITIAL_SP3000_OFFSETS: Sp3000ColorOffsets = {
+  cyanRed: 0,
+  magentaGreen: 0,
+  yellowBlue: 0,
+};
+
 export const INITIAL_MASK_ADJUSTMENTS: MaskAdjustments = {
   blacks: 0,
   brightness: 0,
@@ -496,6 +509,7 @@ export const INITIAL_ADJUSTMENTS: Adjustments = {
   shadows: 0,
   sharpness: 0,
   showClipping: false,
+  sp3000ColorOffsets: { ...INITIAL_SP3000_OFFSETS },
   structure: 0,
   temperature: 0,
   tint: 0,
@@ -590,6 +604,7 @@ export const normalizeLoadedAdjustments = (loadedAdjustments: Adjustments): any 
     colorGrading: { ...INITIAL_ADJUSTMENTS.colorGrading, ...(loadedAdjustments.colorGrading || {}) },
     hsl: { ...INITIAL_ADJUSTMENTS.hsl, ...(loadedAdjustments.hsl || {}) },
     curves: { ...INITIAL_ADJUSTMENTS.curves, ...(loadedAdjustments.curves || {}) },
+    sp3000ColorOffsets: { ...INITIAL_ADJUSTMENTS.sp3000ColorOffsets, ...(loadedAdjustments.sp3000ColorOffsets || {}) },
     masks: normalizedMasks,
     aiPatches: normalizedAiPatches,
     sectionVisibility: {

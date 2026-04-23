@@ -145,6 +145,17 @@ export enum ThumbnailAspectRatio {
   Contain = 'contain',
 }
 
+export interface NumpadSettings {
+  enabled: boolean;
+  mode: 'digital' | 'film';
+  enterKeyMode: 'next' | 'instant-export' | 'skip-move';
+  stepSizes: {
+    exposure: number;
+    contrast: number;
+    rgbCmy: number;
+  };
+}
+
 export interface AppSettings {
   aiConnectorAddress?: string;
   decorations?: any;
@@ -181,6 +192,7 @@ export interface AppSettings {
   waveformHeight?: number;
   activeWaveformChannel?: string;
   useWgpuRenderer?: boolean;
+  numpadSettings?: NumpadSettings;
 }
 
 export interface BrushSettings {
