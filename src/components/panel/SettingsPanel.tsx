@@ -2036,27 +2036,29 @@ export default function SettingsPanel({
                             />
                           </SettingItem>
 
-                          <SettingItem
-                            label="RGB / CMY"
-                            description="Color adjustment amount per key press (units)"
-                          >
-                            <Slider
-                              defaultValue={1}
-                              label=""
-                              max={5}
-                              min={0.1}
-                              onChange={(e: any) => {
-                                const newSettings = {
-                                  ...numpadSettings,
-                                  stepSizes: { ...numpadSettings.stepSizes, rgbCmy: parseFloat(e.target.value) },
-                                };
-                                setNumpadSettings(newSettings);
-                                onSettingsChange({ ...appSettings, numpadSettings: newSettings });
-                              }}
-                              step={0.1}
-                              value={numpadSettings.stepSizes.rgbCmy}
-                            />
-                          </SettingItem>
+                          {numpadSettings.mode === 'film' && (
+                            <SettingItem
+                              label="RGB / CMY"
+                              description="Color adjustment amount per key press (units)"
+                            >
+                              <Slider
+                                defaultValue={1}
+                                label=""
+                                max={5}
+                                min={0.1}
+                                onChange={(e: any) => {
+                                  const newSettings = {
+                                    ...numpadSettings,
+                                    stepSizes: { ...numpadSettings.stepSizes, rgbCmy: parseFloat(e.target.value) },
+                                  };
+                                  setNumpadSettings(newSettings);
+                                  onSettingsChange({ ...appSettings, numpadSettings: newSettings });
+                                }}
+                                step={0.1}
+                                value={numpadSettings.stepSizes.rgbCmy}
+                              />
+                            </SettingItem>
+                          )}
                         </div>
 
                         <div className="pt-4">
@@ -2064,15 +2066,17 @@ export default function SettingsPanel({
                             Key Mapping
                           </Text>
                           <div className="divide-y divide-border-color">
-                            <KeybindItem keys={['7', '4']} description="Yellow / Blue balance" />
-                            <KeybindItem keys={['8', '5']} description="Magenta / Green balance" />
-                            <KeybindItem
-                              keys={['9', '6']}
-                              description="Cyan / Red balance (Film mode only - Experimental)"
-                            />
-                            <KeybindItem keys={['1', '.']} description="Density (Exposure ± Blacks)" />
+                            {numpadSettings.mode === 'film' && <KeybindItem keys={['7', '4']} description="Yellow / Blue balance" />}
+                            {numpadSettings.mode === 'film' && <KeybindItem keys={['8', '5']} description="Magenta / Green balance" />}
+                            {numpadSettings.mode === 'film' && (
+                              <KeybindItem
+                                keys={['9', '6']}
+                                description="Cyan / Red balance (Film mode only - Experimental)"
+                              />
+                            )}
+                            <KeybindItem keys={['1', '.']} description={numpadSettings.mode === 'digital' ? 'Density (Exposure)' : 'Density (Exposure ± Blacks)'} />
                             <KeybindItem keys={['2', '3']} description="Contrast (Soften / Harden)" />
-                            <KeybindItem keys={['0']} description="Reset Film offsets" />
+                            <KeybindItem keys={['0']} description={numpadSettings.mode === 'digital' ? 'Reset color adjustments' : 'Reset Film offsets'} />
                             <KeybindItem keys={['Enter']} description="Next / Export / Skip (based on mode)" />
                           </div>
                         </div>
