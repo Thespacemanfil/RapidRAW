@@ -1993,7 +1993,7 @@ export default function SettingsPanel({
                           <Text variant={TextVariants.heading}>Step Sizes</Text>
 
                           <SettingItem
-                            label="Exposure (Density)"
+                            label={numpadSettings.mode === 'digital' ? 'Exposure' : 'Exposure (Density)'}
                             description="Adjustment amount per key press (stops)"
                           >
                             <Slider
