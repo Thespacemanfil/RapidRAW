@@ -1878,6 +1878,7 @@ export default function SettingsPanel({
                   </Text>
                   <Text className="mb-6">
                     Enable numpad shortcuts for rapid color and density adjustments, inspired by the Fuji Frontier SP-3000 scanner workflow.
+                    {numpadSettings.mode === 'film' && ' Film mode provides RGB/CMY color control similar to traditional film scanners.'}
                   </Text>
 
                   <div className="space-y-6">
@@ -1901,7 +1902,7 @@ export default function SettingsPanel({
                       <>
                         <SettingItem
                           label="Adjustment Mode"
-                          description="Digital: Temperature/Tint. Film: Full RGB/CMY control with density-rich shadows."
+                          description={numpadSettings.mode === 'digital' ? 'Digital: Temperature/Tint adjustments' : 'Film: Full RGB/CMY control with density-rich shadows'}
                         >
                           <div className="relative flex w-full p-1 bg-bg-primary rounded-md border border-border-color">
                             {[
