@@ -154,6 +154,8 @@ export interface NumpadSettings {
     contrast: number;
     rgbCmy: number;
   };
+  defaultExportPresetId?: string;
+  defaultExportPath?: string;
 }
 
 export interface AppSettings {

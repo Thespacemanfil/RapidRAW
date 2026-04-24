@@ -30,6 +30,7 @@ import Input from '../ui/Input';
 import Slider from '../ui/Slider';
 import { ThemeProps, THEMES, DEFAULT_THEME_ID } from '../../utils/themes';
 import { Invokes, NumpadSettings } from '../ui/AppProperties';
+import { ExportPreset } from '../ui/ExportImportProperties';
 import Text from '../ui/Text';
 import { TextColors, TextVariants, TextWeights } from '../../types/typography';
 import { useOsPlatform } from '../../hooks/useOsPlatform';
@@ -1989,6 +1990,71 @@ export default function SettingsPanel({
                             ))}
                           </div>
                         </SettingItem>
+
+                        {numpadSettings.enterKeyMode === 'instant-export' && (
+                          <>
+                            <SettingItem
+                              label="Default Export Preset"
+                              description="Export preset to use for instant export"
+                            >
+                              <div className="relative flex w-full p-1 bg-bg-primary rounded-md border border-border-color">
+                                <select
+                                  value={numpadSettings.defaultExportPresetId || ''}
+                                  onChange={(e) => {
+                                    const newSettings = {
+                                      ...numpadSettings,
+                                      defaultExportPresetId: e.target.value || undefined,
+                                    };
+                                    setNumpadSettings(newSettings);
+                                    onSettingsChange({ ...appSettings, numpadSettings: newSettings });
+                                  }}
+                                  className="w-full bg-bg-primary text-text-primary text-sm outline-none px-2 py-1"
+                                >
+                                  <option value="" className="bg-bg-primary text-text-primary">None</option>
+                                  {(appSettings?.exportPresets || [])
+                                    .filter((p: ExportPreset) => p.id !== '__last_used__')
+                                    .map((preset: ExportPreset) => (
+                                      <option key={preset.id} value={preset.id} className="bg-bg-primary text-text-primary">
+                                        {preset.name}
+                                      </option>
+                                    ))}
+                                </select>
+                              </div>
+                            </SettingItem>
+
+                            <SettingItem
+                              label="Default Export Path"
+                              description="Folder where instant exports will be saved"
+                            >
+                              <div className="flex gap-2">
+                                <div className="flex-1 text-sm text-text-primary truncate">
+                                  {numpadSettings.defaultExportPath || 'Not set'}
+                                </div>
+                                <Button
+                                  variant="secondary"
+                                  size="sm"
+                                  onClick={async () => {
+                                    const { open } = await import('@tauri-apps/plugin-dialog');
+                                    const selected = await open({
+                                      directory: true,
+                                      title: 'Select Default Export Folder',
+                                    });
+                                    if (selected) {
+                                      const newSettings = {
+                                        ...numpadSettings,
+                                        defaultExportPath: selected as string,
+                                      };
+                                      setNumpadSettings(newSettings);
+                                      onSettingsChange({ ...appSettings, numpadSettings: newSettings });
+                                    }
+                                  }}
+                                >
+                                  Browse
+                                </Button>
+                              </div>
+                            </SettingItem>
+                          </>
+                        )}
 
                         <div className="space-y-4 pt-4">
                           <Text variant={TextVariants.heading}>Step Sizes</Text>

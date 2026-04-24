@@ -57,6 +57,7 @@ interface KeyboardShortcutsProps {
   numpadSettings?: NumpadSettings;
   setNumpadSettings?: (settings: NumpadSettings) => void;
   handleExportCurrent?: () => void;
+  handleInstantExport?: () => Promise<boolean>;
   adjustments: Adjustments;
   setAdjustments: (adjustments: Partial<Adjustments> | ((prev: Adjustments) => Adjustments)) => void;
 }
@@ -115,6 +116,7 @@ export const useKeyboardShortcuts = ({
   numpadSettings,
   setNumpadSettings,
   handleExportCurrent,
+  handleInstantExport,
   adjustments,
   setAdjustments,
 }: KeyboardShortcutsProps) => {
@@ -556,22 +558,27 @@ export const useKeyboardShortcuts = ({
                   }
                   break;
                 case 'instant-export':
-                  // Export and move to next
-                  if (handleExportCurrent) {
-                    handleExportCurrent();
-                    const currentIndex = sortedImageList.findIndex(
-                      (img: ImageFile) => img.path === selectedImage.path
-                    );
-                    if (currentIndex !== -1) {
-                      let newIndex = currentIndex + 1;
-                      if (newIndex >= sortedImageList.length) {
-                        newIndex = 0;
+                  // Export and move to next after completion
+                  if (handleInstantExport) {
+                    (async () => {
+                      const exportSuccess = await handleInstantExport();
+                      if (exportSuccess) {
+                        const currentIndex = sortedImageList.findIndex(
+                          (img: ImageFile) => img.path === selectedImage.path
+                        );
+                        if (currentIndex !== -1) {
+                          let newIndex = currentIndex + 1;
+                          if (newIndex >= sortedImageList.length) {
+                            newIndex = 0;
+                          }
+                          const nextImage = sortedImageList[newIndex];
+                          if (nextImage) {
+                            handleImageSelect(nextImage.path);
+                          }
+                        }
                       }
-                      const nextImage = sortedImageList[newIndex];
-                      if (nextImage) {
-                        handleImageSelect(nextImage.path);
-                      }
-                    }
+                      // If export failed, stay on current image (error shown in handleInstantExport)
+                    })();
                   }
                   break;
                 case 'skip-move':
